@@ -1,0 +1,16 @@
+USB-oriented (mass storage) :
+============================
+
+Board Initialization;
+
+Basic sanity check of DataFlash (read ID) 
+and allow user to launch bulk (ie. full chip) erase of data Flash if activating slider switch within 2sec of power on.
+
+Activate USB: 
+then connecting to module to USB Host (PC) should allow to store/retrive files to/from disk.
+If not formatted yet, PC Host should (checked on W7) should propose to format drive in FAT(16).
+
+USB handled by interrupts; run infinite loop flashing green LED in background.
+
+
+NOTE: still somewhat unstable - under investigation.

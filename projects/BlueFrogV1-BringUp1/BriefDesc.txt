@@ -1,0 +1,16 @@
+Data Flash oriented :
+====================
+
+
+Board Initialization;
+
+Test of Data Flash:
+-Read Flash ID and check Manufacturer ID
+- Write random data in 4096 first locations, Read back, bit-wise complement results and write again, read again -- Check final result is complement of origal random data.
+- Check writing of unaligned write addres over smaller than one page;
+
+Turn GREEN LED on if success of Flash test;Da
+
+Infinite loop to blink Red LED
+
+

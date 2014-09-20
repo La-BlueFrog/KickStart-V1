@@ -1,0 +1,11 @@
+USB-Flash interactions oriented :
+================================
+
+Board Initialization;
+
+USB Mass Storage Initalization;
+
+Upon activation of slider switch explore directory /PICTURES on Flash based on FAT16 formatting (very rudimentary for now),
+report number of valid BMP images found by flashing green light as many times.
+
+

@@ -1,0 +1,7 @@
+Basic sanity check using LEDs and slider switch
+================================================
+
+Board Initialization;
+Toggle between Red LED on and Green LED on controlled by users from slider switch.
+
+

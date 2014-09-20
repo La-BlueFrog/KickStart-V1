@@ -1,0 +1,9 @@
+OLED oriented :
+==============
+
+
+Board Initialization;
+
+Start with blue screen on OLED,
+Allow toggling between display of 2 different patterns under control of slider switch
+
