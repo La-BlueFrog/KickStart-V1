@@ -22,5 +22,5 @@ I am providing this package as a means to help using La BlueFrog V1 as easily as
 As I am by no means a hardcore software guy, many improvements are for sure possible in the way these sample projects are structured and coded. This will come with time and as more experienced software developpers bring their contribution. <br>
 In the future, it is planned to add a number of convenient libraries — such as a file system for embedded, a lightweight graphic library for the OLED, etc. <br>
 You are welcome to contribute. Contact me if you would like information on what is already in progress.<br>
--
+
 PS: Most of the software dev work before setting up this Git was done by Roman (thanks!).
