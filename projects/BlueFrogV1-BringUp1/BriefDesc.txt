@@ -14,3 +14,7 @@ Turn GREEN LED on if success of Flash test;Da
 Infinite loop to blink Red LED
 
 
+Note: 
+More files than needed in /src (e.g. usb_xx) and /inc 
+but kept to have same structure and contents of all "BringUp" directories
+-- only main() is different and calls what needs to be

@@ -149,6 +149,7 @@ void OLED_SPI_Init(void)
     
     /* Active le OLED_SPI */
     SPI_Cmd(OLED_SPI, ENABLE);
+
 }
 
 /*******************************************************************************

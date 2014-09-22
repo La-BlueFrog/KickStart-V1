@@ -7,3 +7,9 @@ Board Initialization;
 Start with blue screen on OLED,
 Allow toggling between display of 2 different patterns under control of slider switch
 
+
+
+Note: 
+More files than needed in /src (e.g. usb_xx) and /inc 
+but kept to have same structure and contents of all "BringUp" directories
+-- only main() is different and calls what needs to be

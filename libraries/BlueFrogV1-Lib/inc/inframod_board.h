@@ -32,177 +32,8 @@
 #define GPIO_TOGGLE(a,b)                a->ODR ^= b
 
 
-#if defined (USE_INFRAMODULE_V12)
 /******************************************************************************/
-/*        DEFINITIONS DES CONSTANTES POUR LA VERSION INFRAMODULE V1.2         */
-/******************************************************************************/
-
-
-/* Entrees/Sorties */
-#define SLIDE_1_PIN                     GPIO_Pin_2                  // PC2
-#define SLIDE_1_GPIO_PORT               GPIOC
-#define SLIDE_1_GPIO_CLK                RCC_AHBPeriph_GPIOC
-#define SLIDE_2_PIN                     GPIO_Pin_3                  // PC3
-#define SLIDE_2_GPIO_PORT               GPIOC
-#define SLIDE_2_GPIO_CLK                RCC_AHBPeriph_GPIOC
-
-#define LED_VERTE_PIN                   GPIO_Pin_2                  // PA2
-#define LED_VERTE_PORT                  GPIOA
-#define LED_VERTE_CLK                   RCC_AHBPeriph_GPIOA
-#define LED_ROUGE_PIN                   GPIO_Pin_3                  // PA3
-#define LED_ROUGE_PORT                  GPIOA
-#define LED_ROUGE_CLK                   RCC_AHBPeriph_GPIOA
-
-
-/* Power Management LP3913 - I2C */
-#define PWR_I2C                         I2C1
-#define PWR_I2C_CLK                     RCC_APB1Periph_I2C1
-#define PWR_I2C_SCL_PIN                 GPIO_Pin_6                  // PB6
-#define PWR_I2C_SCL_GPIO_PORT           GPIOB
-#define PWR_I2C_SCL_GPIO_CLK            RCC_AHBPeriph_GPIOB
-#define PWR_I2C_SCL_SOURCE              GPIO_PinSource6
-#define PWR_I2C_SCL_AF                  GPIO_AF_I2C1
-#define PWR_I2C_SDA_PIN                 GPIO_Pin_7                  // PB7
-#define PWR_I2C_SDA_GPIO_PORT           GPIOB
-#define PWR_I2C_SDA_GPIO_CLK            RCC_AHBPeriph_GPIOB
-#define PWR_I2C_SDA_SOURCE              GPIO_PinSource7
-#define PWR_I2C_SDA_AF                  GPIO_AF_I2C1
-
-#define PWR_ONSTAT_PIN                  GPIO_Pin_0                  // PC0
-#define PWR_ONSTAT_GPIO_PORT            GPIOC
-#define PWR_ONSTAT_GPIO_CLK             RCC_AHBPeriph_GPIOC
-#define PWR_ONSTAT_EXTI_PORT            EXTI_PortSourceGPIOC
-#define PWR_ONSTAT_SOURCE               EXTI_PinSource0
-#define PWR_POWERACK_PIN                GPIO_Pin_1                  // PB1
-#define PWR_POWERACK_GPIO_PORT          GPIOB
-#define PWR_POWERACK_GPIO_CLK           RCC_AHBPeriph_GPIOB
-#define PWR_NRST_PIN                    GPIO_Pin_9                  // PA9
-#define PWR_NRST_GPIO_PORT              GPIOA
-#define PWR_NRST_GPIO_CLK               RCC_AHBPeriph_GPIOA
-#define PWR_IRQB_PIN                    GPIO_Pin_10                 // PA10
-#define PWR_IRQB_GPIO_PORT              GPIOA
-#define PWR_IRQB_GPIO_CLK               RCC_AHBPeriph_GPIOA
-#define PWR_IRQB_EXTI_PORT              EXTI_PortSourceGPIOA
-#define PWR_IRQB_SOURCE                 EXTI_PinSource10
-
-
-/* Memoire FLASH M25PX16M - SPI */
-#define FLASH_SPI                       SPI2
-#define FLASH_SPI_CLK                   RCC_APB1Periph_SPI2
-#define FLASH_CS_PIN                    GPIO_Pin_12                 // PB12
-#define FLASH_CS_GPIO_PORT              GPIOB
-#define FLASH_CS_GPIO_CLK               RCC_AHBPeriph_GPIOB
-#define FLASH_SPI_SCK_PIN               GPIO_Pin_13                 // PB13
-#define FLASH_SPI_SCK_GPIO_PORT         GPIOB
-#define FLASH_SPI_SCK_GPIO_CLK          RCC_AHBPeriph_GPIOB
-#define FLASH_SPI_SCK_SOURCE            GPIO_PinSource13
-#define FLASH_SPI_SCK_AF                GPIO_AF_SPI2
-#define FLASH_SPI_MISO_PIN              GPIO_Pin_14                 // PB14
-#define FLASH_SPI_MISO_GPIO_PORT        GPIOB
-#define FLASH_SPI_MISO_GPIO_CLK         RCC_AHBPeriph_GPIOB
-#define FLASH_SPI_MISO_SOURCE           GPIO_PinSource14
-#define FLASH_SPI_MISO_AF               GPIO_AF_SPI2
-#define FLASH_SPI_MOSI_PIN              GPIO_Pin_15                 // PB15
-#define FLASH_SPI_MOSI_GPIO_PORT        GPIOB
-#define FLASH_SPI_MOSI_GPIO_CLK         RCC_AHBPeriph_GPIOB
-#define FLASH_SPI_MOSI_SOURCE           GPIO_PinSource15
-#define FLASH_SPI_MOSI_AF               GPIO_AF_SPI2
-
-#define FLASH_HOLD_PIN                  GPIO_Pin_10                 // PB10
-#define FLASH_HOLD_GPIO_PORT            GPIOB
-#define FLASH_HOLD_GPIO_CLK             RCC_AHBPeriph_GPIOB
-#define FLASH_WR_PIN                    GPIO_Pin_11                 // PB11
-#define FLASH_WR_GPIO_PORT              GPIOB
-#define FLASH_WR_GPIO_CLK               RCC_AHBPeriph_GPIOB
-
-
-/* Ecran OLED DD-160128FC-1A - SPI */
-
-// Broches de configuration
-#define OLED_CPU_PIN                    GPIO_Pin_10                 // PC10
-#define OLED_CPU_PORT                   GPIOC
-#define OLED_CPU_CLK                    RCC_AHBPeriph_GPIOC
-#define OLED_PS_PIN                     GPIO_Pin_11                 // PC11
-#define OLED_PS_PORT                    GPIOC
-#define OLED_PS_CLK                     RCC_AHBPeriph_GPIOC
-
-// Broches de controle
-#define OLED_RS_PIN                     GPIO_Pin_9                  // PB9
-#define OLED_RS_PORT                    GPIOB
-#define OLED_RS_CLK                     RCC_AHBPeriph_GPIOB
-#define OLED_CS_PIN                     GPIO_Pin_4                  // PA4
-#define OLED_CS_PORT                    GPIOA
-#define OLED_CS_CLK                     RCC_AHBPeriph_GPIOA
-#define OLED_RD_PIN                     GPIO_Pin_1                  // PA1
-#define OLED_RD_PORT                    GPIOA
-#define OLED_RD_CLK                     RCC_AHBPeriph_GPIOA
-#define OLED_WR_PIN                     GPIO_Pin_0                  // PA0
-#define OLED_WR_PORT                    GPIOA
-#define OLED_WR_CLK                     RCC_AHBPeriph_GPIOA
-#define OLED_RESET_PIN                  GPIO_Pin_13                 // PC13
-#define OLED_RESET_PORT                 GPIOC
-#define OLED_RESET_CLK                  RCC_AHBPeriph_GPIOC
-
-// Broche de donnees - Bus parallele
-#define OLED_D9_PIN                     GPIO_Pin_8
-#define OLED_D9_PORT                    GPIOB
-#define OLED_D9_CLK                     RCC_AHBPeriph_GPIOB
-#define OLED_D10_PIN                    GPIO_Pin_5
-#define OLED_D10_PORT                   GPIOB
-#define OLED_D10_CLK                    RCC_AHBPeriph_GPIOB
-#define OLED_D11_PIN                    GPIO_Pin_4
-#define OLED_D11_PORT                   GPIOB
-#define OLED_D11_CLK                    RCC_AHBPeriph_GPIOB
-#define OLED_D12_PIN                    GPIO_Pin_3
-#define OLED_D12_PORT                   GPIOB
-#define OLED_D12_CLK                    RCC_AHBPeriph_GPIOB
-#define OLED_D13_PIN                    GPIO_Pin_2
-#define OLED_D13_PORT                   GPIOD
-#define OLED_D13_CLK                    RCC_AHBPeriph_GPIOD
-#define OLED_D14_PIN                    GPIO_Pin_12
-#define OLED_D14_PORT                   GPIOC
-#define OLED_D14_CLK                    RCC_AHBPeriph_GPIOC
-#define OLED_D15_PIN                    GPIO_Pin_6
-#define OLED_D15_PORT                   GPIOA
-#define OLED_D15_CLK                    RCC_AHBPeriph_GPIOA
-#define OLED_D16_PIN                    GPIO_Pin_7
-#define OLED_D16_PORT                   GPIOA
-#define OLED_D16_CLK                    RCC_AHBPeriph_GPIOA
-#define OLED_D17_PIN                    GPIO_Pin_5
-#define OLED_D17_PORT                   GPIOA
-#define OLED_D17_CLK                    RCC_AHBPeriph_GPIOA
-
-// Broches de donnees - Bus SPI
-#define OLED_SPI                        SPI1
-#define OLED_SPI_CLK                    RCC_APB2Periph_SPI1
-#define OLED_CS_PIN                     GPIO_Pin_4                  // PA4
-#define OLED_CS_GPIO_PORT               GPIOA
-#define OLED_CS_GPIO_CLK                RCC_AHBPeriph_GPIOA
-#define OLED_SPI_SCK_PIN                GPIO_Pin_5                  // PA5
-#define OLED_SPI_SCK_GPIO_PORT          GPIOA
-#define OLED_SPI_SCK_GPIO_CLK           RCC_AHBPeriph_GPIOA
-#define OLED_SPI_SCK_SOURCE             GPIO_PinSource5
-#define OLED_SPI_SCK_AF                 GPIO_AF_SPI1
-#define OLED_SPI_MISO_PIN               GPIO_Pin_6                  // PA6
-#define OLED_SPI_MISO_GPIO_PORT         GPIOA
-#define OLED_SPI_MISO_GPIO_CLK          RCC_AHBPeriph_GPIOA
-#define OLED_SPI_MISO_SOURCE            GPIO_PinSource6
-#define OLED_SPI_MISO_AF                GPIO_AF_SPI1
-#define OLED_SPI_MOSI_PIN               GPIO_Pin_7                  // PA7
-#define OLED_SPI_MOSI_GPIO_PORT         GPIOA
-#define OLED_SPI_MOSI_GPIO_CLK          RCC_AHBPeriph_GPIOA
-#define OLED_SPI_MOSI_SOURCE            GPIO_PinSource7
-#define OLED_SPI_MOSI_AF                GPIO_AF_SPI1
-
-// Broches d'alimentation VCC_OLED
-#define OLED_VDDH_PIN                   GPIO_Pin_15                 // PA15
-#define OLED_VDDH_CLK                   RCC_AHBPeriph_GPIOA
-#define OLED_VDDH_PORT                  GPIOA
-
-
-#elif defined (USE_INFRAMODULE_V15)
-/******************************************************************************/
-/*        DEFINITIONS DES CONSTANTES POUR LA VERSION INFRAMODULE V1.5         */
+/*        DEFINITIONS DES CONSTANTES POUR LA VERSION INFRAMODULE V1.6         */
 /******************************************************************************/
 
 /* Entrees/Sorties */
@@ -253,7 +84,7 @@
 #define PWR_IRQB_SOURCE                 EXTI_PinSource6
 
 
-/* Memoire FLASH M25PX16M - SPI */
+/* Memoire FLASH AT45DB - SPI */
 #define FLASH_SPI                       SPI2
 #define FLASH_SPI_CLK                   RCC_APB1Periph_SPI2
 #define FLASH_CS_PIN                    GPIO_Pin_12                 // PB12
@@ -378,10 +209,6 @@
 #define UART_RX_CLK                     RCC_AHBPeriph_GPIOA
 #define UART_RX_SOURCE                  GPIO_PinSource10
 
-
-#else
-    #error "Missing define: USE_INFRAMODULE_V12 or USE_INFRAMODULE_V15"
-#endif /* USE_INFRAMODULE_VXX */
 
 
 #endif /*__INFRAMOD_BOARD_H*/

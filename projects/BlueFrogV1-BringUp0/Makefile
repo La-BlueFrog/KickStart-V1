@@ -1,25 +1,20 @@
 ################################################################################
 #
-# Makefile pour le module Infra - version 1.2
+# Makefile for La BlueFrog V1  (codename: Infra Module, v1.5 and v1.6)
 # 
-# Librairie : stm32l1xx_stperiph_lib_v1.2.0 (22/02/13)
-#
 ################################################################################
 
-# Nom de l'executable
+# Name of executable
 TARGET          = inframod
-
-# Version du module
-#VERSION         = USE_INFRAMODULE_V12
-VERSION         = USE_INFRAMODULE_V15
 
 # debugger
 DEBUGGER        = DEBUG
 
-# Optimisation (0,1,2,s)
+
+# Optimization (0,1,2,s)
 OPT             = s
 
-# Adresse des repertoires
+# Directory paths
 SRC_DIR         = ./src
 INC_DIR         = ./inc
 OBJ_DIR         = ./obj
@@ -34,22 +29,22 @@ INFRAMOD_DIR    = $(RACINE)/libraries/BlueFrogV1-Lib
 # Linker script
 LINKER          = $(SRC_DIR)/startup/stm32_flash.ld
 
-# Adresses des fichiers sources
+# Source file paths (user's)
 VPATH          := $(SRC_DIR):$(SRC_DIR)/startup
 
-# Adresses des fichiers sources : CMSIS
+# Source file paths : CMSIS
 VPATH          := $(VPATH):$(CMSIS_DIR)/Device/ST/STM32L1xx/Source/Templates
 CMSIS_SRC       = $(notdir $(wildcard $(CMSIS_DIR)/Device/ST/STM32L1xx/Source/Templates/*.c))
 
-# Adresses des fichiers sources : STM32L1xx_StdPeriph_Driver
+# Source file paths : STM32L1xx_StdPeriph_Driver
 VPATH          := $(VPATH):$(STDPERIPH_DIR)/src
 STDPERIPH_SRC   = $(notdir $(wildcard $(STDPERIPH_DIR)/src/*.c))
 
-# Adresses des fichiers sources : STM32L1xx_USB-FS-Device_Driver
+# Source file paths : STM32L1xx_USB-FS-Device_Driver
 VPATH          := $(VPATH):$(USBDEVICE_DIR)/src
 USBDEVICE_SRC   = $(notdir $(wildcard $(USBDEVICE_DIR)/src/*.c))
 
-# Adresses des fichiers sources : InfraModule_Lib_v0.1
+# Source file paths : BlueFrogV1-Lib
 VPATH          := $(VPATH):$(INFRAMOD_DIR)/src
 INFRAMOD_SRC    = $(notdir $(wildcard $(INFRAMOD_DIR)/src/*.c))
 
@@ -82,7 +77,6 @@ CFLAGS = \
 	-fdata-sections \
 	-DSTM32L1XX_MD \
 	-DUSE_STDPERIPH_DRIVER \
-	-D$(VERSION) \
 	-D$(DEBUGGER) \
 	-fno-exceptions \
 	-Wno-write-strings
@@ -171,16 +165,13 @@ purge:
 	@rm -vRf $(OBJ_DIR)
 
 version:
-ifeq ($(VERSION),USE_INFRAMODULE_V12)
-	@echo -e "\033[01;41m /!\ ATTENTION : Compilation pour le module Infra version 1.2 /!\ \033[0m"
-else ifeq ($(VERSION),USE_INFRAMODULE_V15)
-	@echo -e "\033[01;41m /!\ ATTENTION : Compilation pour le module Infra version 1.5 /!\ \033[0m"
-endif
+	@echo -e "\033[01;41m /!\ ATTENTION : Compilation pour le module Infra version 1.5 ou v1.6 /!\ \033[0m"
+
 
 help:
 	@echo ""
 	@echo "#==============================================================#"
-	@echo "# Makefile pour STM32L-Discovery                               #"
+	@echo "# Makefile for La BLueFrog-V1                                  #"
 	@echo "#                                                              #"
 	@echo "# Usage: make [options]                                        #"
 	@echo "#                                                              #"

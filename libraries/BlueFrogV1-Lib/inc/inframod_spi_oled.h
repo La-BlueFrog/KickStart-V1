@@ -55,6 +55,7 @@ void OLED_VDDH_Init (void);
 
 uint8_t OLED_SPI_EnvoyerOctet (uint8_t octet);
 
+
 #endif  /*__INFRAMOD_SPI_OLED_H*/
 
 /***************************************************************END OF FILE****/

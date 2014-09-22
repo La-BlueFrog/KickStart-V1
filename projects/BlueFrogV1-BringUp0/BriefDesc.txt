@@ -1,7 +1,12 @@
+
 Basic sanity check using LEDs and slider switch
 ================================================
 
 Board Initialization;
-Toggle between Red LED on and Green LED on controlled by users from slider switch.
+Toggle between Red LED and Green LED controlled by users through slider switch.
 
 
+Note: 
+More files than needed in /src (e.g. usb_xx) and /inc 
+but kept to have same structure and contents of all "BringUp" directories
+-- only main() is different and calls what needs to be
