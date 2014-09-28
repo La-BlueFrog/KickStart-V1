@@ -1,7 +1,8 @@
 
 ReadMe file - V0.1 - 18-Sep-14
-=================================
 
+
+================================
 FILE STRUCTURE:
 
 /STM32-Projects
@@ -44,17 +45,22 @@ The example projects provided can be simply built by "make build" and programmed
 
 ================================
 
+Regarding development chains for the STM32, there are a number of options, with or without IDE. Please have a look at BlueFrog_Dev_Chain.pdf in directory /documentation.
+
+
+================================
+
 Board Programming/Debug/IO Connector: 
 
-                |
-   UART_Rx  O   | ---------------------------------------------  e.g. to UART-USB cable connected to PC Virtual Com interface
-   UART_Tx  O   | ---------------------------------------------    or for interfacing with external system (UART or GPIO)
-                |
-   GND      O   | --------------  STLink-V2 programmer
-   SWLK     O   | --------------  STLink-V2 programmer
-   Ext3V    O   | --------------  STLink-V2 programmer
-   SWD      O   | --------------  STLink-V2 programmer
-   RST      O   | ----  no connection needed
-    ____________|
+               |
+   UART_Rx  O  | ----------------------------------------  e.g. to UART-USB cable connected to PC Virtual Com interface
+   UART_Tx  O  | ----------------------------------------    or for interfacing with external system (UART or GPIO)
+               |
+   GND      O  | --------------  STLink-V2 programmer
+   SWLK     O  | --------------  STLink-V2 programmer
+   Ext3V    O  | --------------  STLink-V2 programmer
+   SWD      O  | --------------  STLink-V2 programmer
+   RST      O  | --- no connection needed
+    ___________|
 
-
+================================
