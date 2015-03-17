@@ -1,7 +1,9 @@
 KickStart-V1
 ============
 
-This Git provides some starting material to kickstart your projects on La BlueFrog :
+This Git provides some starting material to kickstart your projects on La BlueFrog-V1
+
+CAUTION: This is for V1. Software for La-BlueFrog V2 will be put on GitHub shortly.
 
 - Documentation : <br>
   . Structure of the example projects (see readme.txt)<br>
