@@ -1,6 +1,0 @@
-Full Demo :
-===========
-
-Display images in valid BMP888 format, size 160x128, found in directory /PICTURES of FAT16-formatted Flash seen as USB drive.
-Slider switch actionated in one direction enables switching to the next picture and actionated in the other direction enables displaying time.
-File config.txt optionally stored alongside /PICTURES allows initializing time and customizing some OLED parameters.
