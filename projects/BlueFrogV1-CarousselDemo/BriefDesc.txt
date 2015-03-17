@@ -1,0 +1,15 @@
+Carroussel Demo
+==================
+
+USB is launched
+FatFS is intialized
+
+Software checks if CONFIG.TXT present in Flash (assumed to be FAT formatted)
+If not takes default values.
+
+Software lists all BMP files found in root directoty.
+Valid BMP files (160x128 max, 24bpp aka RGB888) can be decoded and displayed.
+Slider switch allows to display next or previous picture.
+
+Note : some "exotic" BMP files are not supported. Invalid BMP files are replaced by a Blue screen. 
+BMP files from e.g. Windows Paint are known to be supported.

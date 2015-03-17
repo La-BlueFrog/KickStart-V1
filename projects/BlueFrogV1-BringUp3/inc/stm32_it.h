@@ -1,8 +1,8 @@
 /*******************************************************************************
  * stm32_it.h
  * 
- * Copyright 2014 Roman GAUCHI <roman.gauchi@gmail.com>
- * 
+ * Author: La BlueFrog, 2015
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -18,26 +18,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * 
- ******************************************************************************/
+ *************************************************************************/
 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __STM32_IT_H
 #define __STM32_IT_H
 
-/* Includes ------------------------------------------------------------------*/
-#include "hw_config.h"
-
-#include "usb_lib.h"
-#include "usb_istr.h"
-#include "usb_pwr.h"
 
 
 /* Exported functions ------------------------------------------------------- */
 
 void EXTI0_IRQHandler (void);
-void EXTI6_IRQHandler (void);
-void EXTI10_IRQHandler (void);
+void EXTI15_10_IRQHandler (void);
+void EXTI9_5_IRQHandler (void);
 void RTC_WKUP_IRQHandler (void);
 
 void NMI_Handler(void);

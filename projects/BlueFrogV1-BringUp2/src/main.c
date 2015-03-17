@@ -1,8 +1,8 @@
 /*******************************************************************************
  * main.c
  * 
- * Copyright 2014 Roman GAUCHI <roman.gauchi@gmail.com>
- * 
+ * Author: La BlueFrog, 2015
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -18,13 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * 
- ******************************************************************************/
+ *************************************************************************/
 
-
-/* Includes ------------------------------------------------------------------*/
-#include "hw_config.h"
-
-/* Privates prototypes -------------------------------------------------------*/
+#include "LBF_Global.h"
 
 
 
@@ -37,52 +33,108 @@
 *******************************************************************************/
 int main(void)
 {
-    uint16_t fconfig[11];  // configuration file to control some OLED parameters
-
-     // Board Initializations and Configurations
-    Set_System();
-    PWR_Init();
-    Led_Config();
-    Slide_Config();  
-    FLASH_Init();
-    OLED_Init();  // OLED interface init- Power to OLED (VDDH=13V) is still disabled
-
-    Led_Rouge_ON();  //just to provide an intermediate status
 
 
-    // OLED configuration  
-    fconfig[0]=0xFFFF;     //so OLED_Config() will use default init value
-    OLED_Config(fconfig);  //sets up OLED register and powers on OLED VDDH(13V) 
+/* ================================================================ */
+/* Board Initializations and Configurations except OLED             */
+/* (clocks, I/Os, on-chip peripherals, on-board ICs)                */
+/* ================================================================ */
 
-    OLED_Fill(0, 0, 160, 128, BLEU);  
-    Led_Verte_ON();  //just to provide an intermediate status
+    LBF_Board_Init();
 
+    Red_Led_ON();
+
+/* ================================================================ */
+/* Optional initialization of Middleware libraries :                */
+/* USBD drivers, FatFS File System, STemWin GUI                     */
+/* ================================================================ */
+
+    // UNCOMMENT IF YOU WELL BE USING ...:
+  
+    /* ... La BlueFrog as USB Mass Storage (Full Speed)             */
+    /*     (based on ST-provided stack part of STM32 Cube offering  */
+    // Delay_ms(1000);
+    // LBF_LaunchUSB_MassStorage();
+ 
+    /* ... the FAT File System (FatFS)                              */
+    /*     (based on ChanN's FatFS included in STM32 Cube offering) */
+    // LBF_FatFS_Init();
+
+    /* ... the STemWin Graphical Library                            */
+    /*     (based on Segger's emWin included in STM32 Cube offering)*/
+    // LBF_emWin_Init();
+
+
+    Red_Led_OFF();
+
+
+
+
+/* ===================================================== */
+/* Application Code Below */
+/* ===================================================== */
+
+/* ==  User Declarations =============================== */
+
+uint16_t fconfig[11];  // configuration file to control some OLED parameters
+
+uint32_t rand();  //returns a value between 0 and RAND_MAX (defined by the compiler, often 32767)
+uint16_t color_table[8] = {BLACK, YELLOW, RED, WHITE, GREEN, BLUE, ORANGE, CYAN} ;
+uint32_t start_color_index;
+uint8_t Xstart, Ystart;
+uint16_t random565;
+
+/* ==  Body              =============================== */
+
+
+    /*---- Initialize and Enable OLED:    -------------------*/
+    fconfig[0]=0xFFFF;     
+        //so OLED_Config() will use default init value
+    LBF_OLED_Init(fconfig);  
+        //sets up OLED register and powers on OLED VDDH(13V) 
+
+
+    /*-------------------------------------------------------*/
+    OLED_Fill(0, 0, 160, 128, BLUE);  
+
+    Red_Led_ON();   //just to provide an intermediate status
+
+ 
     while(1)
     {
-          if ( (!GPIO_ReadInputDataBit(SLIDE_1_GPIO_PORT, SLIDE_1_PIN)) )
-          {  
-             OLED_Fill(0, 0, 40, 128, NOIR);  
-             OLED_Fill(40, 0,40, 128, JAUNE);
-             OLED_Fill(80, 0, 40, 128, VERT);
-             OLED_Fill(120, 0, 40, 128, BLANC);
+          if ( Get_Slider_Select1() )
+          { 
+	  Delay_ms(10);
+          Xstart = rand()%160;
+          random565 = ( ((rand()%32)<<11) + ((rand()%64)<<5) + ((rand()%32)) );
+          OLED_Fill(Xstart, 0, rand()%5, 128, random565);
+
+	  Delay_ms(10);
+          Ystart = rand()%128;
+          random565 = ( ((rand()%32)<<11) + ((rand()%64)<<5) + ((rand()%32)) );
+          OLED_Fill(0, Ystart, 160, rand()%5, random565);
           }
-          if ( (!GPIO_ReadInputDataBit(SLIDE_2_GPIO_PORT, SLIDE_2_PIN)) )
+
+          if ( Get_Slider_Select2() )
           {  
              // Fill the 160x128 screens with 8 colors organized as 2 rows of 4 blocks
-             // Arguments: Xstart, Ystart, Width, Height, Color in RGB565 format (can use colors defined in hw_config.h)
-             OLED_Fill(0, 0, 40, 64, NOIR);  
-             OLED_Fill(40, 0,40, 64, JAUNE);
-             OLED_Fill(80, 0, 40, 64, ROUGE);
-             OLED_Fill(120, 0, 40, 64, BLANC);
-             OLED_Fill(0, 64, 40, 64, VERT);
-             OLED_Fill(40, 64, 40, 64, BLEU);
-             OLED_Fill(80, 64, 40, 64, ORANGE);
-             OLED_Fill(120, 64, 40, 64, CYAN);
+             // Arguments: Xstart, Ystart, Width, Height, Color in RGB565 format 
+	  start_color_index = rand();
+          OLED_Fill(0, 0, 40, 64, color_table[(start_color_index+0)%8]);  
+          OLED_Fill(40, 0,40, 64, rand()%65536 );
+          OLED_Fill(80, 0, 40, 64, color_table[(start_color_index+2)%8]);
+          OLED_Fill(120, 0, 40, 64, rand()%65536 );
+          OLED_Fill(0, 64, 40, 64, color_table[(start_color_index+4)%8]);
+          OLED_Fill(40, 64, 40, 64, rand()%65536 );
+          OLED_Fill(80, 64, 40, 64, color_table[(start_color_index+6)%8]);
+          OLED_Fill(120, 64, 40, 64, rand()%65536 );
           }
+
+
      }
  
     return 0;
 }
-
+	
 
 /***************************************************************END OF FILE****/

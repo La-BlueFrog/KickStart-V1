@@ -1,0 +1,14 @@
+TEST of STemWin GFX Library for OLED 
+=====================================
+
+Initialize Board
+Initialize emWin
+
+
+Define a "Memory Device" in emWin's terminology (ie a cache) and perform some drawing and text writing operations using emWin API.
+
+The Cache must fit in 32K SRAM of STM32L1RC along with stack etc. so can't contain full screen.
+Solution to address full screen can be to use "Banding" Memory Device.
+
+REfer to emWin's user manual for API etc.
+

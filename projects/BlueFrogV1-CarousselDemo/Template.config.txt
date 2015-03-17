@@ -1,0 +1,24 @@
+#
+# config.txt
+#
+
+# Heure au demarrage (HHMM)
+Current time = 1925
+
+# Frequence de rafraichissement de l'ecran
+Frame frequency = 90
+
+# Courrant d'attaque RVB (uA) - valeurs par defaut : 82 / 56 / 58
+Driving current R = 82
+Driving current G = 56
+Driving current B = 58
+
+# Temps de prechargement RVB - valeurs par defaut : 1 / 1 / 1
+Precharge time R = 1
+Precharge time G = 1
+Precharge time B = 1
+
+# Courrant de prechargement RVB (uA) - valeurs par defaut : 10 / 10 / 10
+Prechage current R = 10
+Prechage current G = 10
+Prechage current B = 10

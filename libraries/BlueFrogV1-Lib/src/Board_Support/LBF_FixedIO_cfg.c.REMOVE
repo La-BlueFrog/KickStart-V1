@@ -1,0 +1,260 @@
+/*******************************************************************************
+ * LBF_FixedIO_cfg.c
+ * 
+  * Author: La BlueFrog, 2015
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * 
+ *************************************************************************/
+
+#include "LBF_lowlev_API.h"
+
+#include "LBF_FixedIO_cfg.h"
+
+
+
+/* Privates prototypes -------------------------------------------------------*/
+
+
+/* Functions -----------------------------------------------------------------*/
+
+/*******************************************************************************
+ * @brief  : Initialise GPIOs that interface with on-board chips.
+ *           These have a fixed function in La BlueFrog (as opposed to those
+             which interface with external connectors whose role is user-defined
+ * @param  : none.
+ * @return : none.
+ ******************************************************************************/
+void LBF_FixedIO_cfg(void)
+{
+
+/*
+ *  GPIOs that are assigned a fixed function are the following.
+ *  (note GPIOs that are permanently assigned an alternate function e.g I2C
+ *   are dealt with separately )
+ * 
+ *  For Data Flash:
+ *    PA8	/HOLD
+ *    PB12	/CS
+ *    PC9	/WR
+ *  For Slider Switch
+ *    PC12 = 	SLIDER_Pos 1
+ *    PA15 = 	SLIDER Pos 2
+ *  For LED:
+ *    PA2 = 	Green LED
+ *    PA3 =	Red LED
+ *  For Power Management ICs:
+ *    PB0 =	ONSTAT
+ *    PA1 = 	POWERACK
+ *    PA7 = 	NRST_sw
+ *    PA6 =	IRQB  //********* IRQ, à voir
+ *    PA5 =	OLED_VDDH aka BoostConverter_En
+ *  For OLED:
+ *    PC10 =    CPU (not used)
+ *    PC11 =	PS
+ *    PB9 =	RS
+ *    PA4 = 	CS
+ *    PD2 = 	RD (not used)
+ *    PA0 = 	WR (not used)
+ *    PC13 = 	RESET
+ *    PC0-PC8 =	D9-D17 in parallel mode (not used)
+*/
+
+GPIO_InitTypeDef GPIO_InitStruct;
+
+  /* GPIO Ports Clock Enable */
+  __GPIOC_CLK_ENABLE();
+  __GPIOH_CLK_ENABLE();
+  __GPIOA_CLK_ENABLE();
+  __GPIOB_CLK_ENABLE();
+  __GPIOD_CLK_ENABLE();
+
+  /*Configure GPIO pins : PC13 PC9 */  
+  //OLED Reset, DataFlash /WR
+  GPIO_InitStruct.Pin = GPIO_PIN_13|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA0 PA1 PA4 PA5 
+                           PA8 */
+  // OLED WR, PMIC PowerAck, OLED /CS, OLED_VDDH
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_4|GPIO_PIN_5 
+                          |GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA2 PA3 */
+  // Green LED, Red LED
+  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_VERY_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA6 */
+  // IRQB
+  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA7 PA15 */
+  // NRST_sw, SLider Pos 2
+  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB0 */
+  // OnStat
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB1 */ 
+//?????????????????????????????????????????
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_VERY_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB2 */
+// ?????????????????????????????????????????
+  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB12 PB9 */
+  // DataFlash /CS, OLED RS
+  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC11 */
+  // OLED PS
+  GPIO_InitStruct.Pin = GPIO_PIN_11;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC12 */
+  // Slider Pos 1
+  GPIO_InitStruct.Pin = GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PD2 */
+  // OLED RESET
+  GPIO_InitStruct.Pin = GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_MEDIUM;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+
+
+}
+
+
+
+/*******************************************************************************
+ * @brief  : Initialise GPIOs used as Data Flash pin CS
+ * @param  : none.
+ * @return : none.
+ ******************************************************************************/
+void FLASH_CS_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+  
+   // Enable relevant GPIO clock
+    RCC_AHBPeriphClockCmd( FLASH_CS_GPIO_CLK, ENABLE);   
+   
+    /* Configure pin CS */
+    GPIO_InitStructure.GPIO_Pin   = FLASH_CS_PIN;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_Init(FLASH_CS_GPIO_PORT, &GPIO_InitStructure);
+
+    /* Initialise to inactive level */
+    FLASH_CS_HIGH();    
+
+}
+
+/*******************************************************************************
+ * @brief  : Initialise GPIOs used as Data Flash pin HOLD
+ * @param  : none.
+ * @return : none.
+ ******************************************************************************/
+void FLASH_HoldProtect_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    
+    /* Active l'horloge de la pin HOLD */
+    RCC_AHBPeriphClockCmd(FLASH_HOLD_GPIO_CLK, ENABLE);
+    
+    /* Configure la pin HOLD */
+    GPIO_InitStructure.GPIO_Pin   = FLASH_HOLD_PIN;
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+    GPIO_Init(FLASH_HOLD_GPIO_PORT, &GPIO_InitStructure);
+    
+    /* Initialise la pin a l'etat haut */
+    FLASH_HOLD_HIGH();
+}
+
+/*******************************************************************************
+ * @brief  : Initialise GPIOs used as Data Flash pin WR/VPP
+ * @param  : none.
+ * @return : none.
+ ******************************************************************************/
+void FLASH_WriteProtect_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+    
+    /* Active l'horloge de la pin WR */
+    RCC_AHBPeriphClockCmd(FLASH_WR_GPIO_CLK, ENABLE);
+    
+    /* Configure la pin WR */
+    GPIO_InitStructure.GPIO_Pin   = FLASH_WR_PIN;
+
+    GPIO_InitStructure.GPIO_Mode  = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
+    GPIO_Init(FLASH_HOLD_GPIO_PORT, &GPIO_InitStructure);
+    
+    /* Initialise la pin a l'etat haut */
+    FLASH_WR_HIGH();
+}
+
+
+
+/***************************************************************END OF FILE****/

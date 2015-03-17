@@ -1,0 +1,17 @@
+BASIC FatFS EXAMPLE -- using DataFlash as logical Disk
+========================================================
+
+Initialize Board
+
+Open (create) a file TOTO.txt
+Write a string in it
+Close File
+
+Open same file
+Read String
+Close file
+
+Check that written and read back string have same length
+Get LED to blink if success, else stay fixed
+
+Launch USB so written fie can be checked from PC 

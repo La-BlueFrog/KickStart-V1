@@ -1,15 +1,14 @@
-OLED oriented :
-==============
+BASIC OLED UNITARY TEST
+========================
+
+- Configure Board
+- Initialize OLED
+
+- After blue splash screen, slider switch allows to toogle OLED display between 2 modes:
+
+> criss-cross of horizontal and vertical lines,
+  random width between 0 and 4 pixels, random color
+or
+> mosaic of 8 blocks with 4 random colors and 4 taken from a fixed table
 
 
-Board Initialization;
-
-Start with blue screen on OLED,
-Allow toggling between display of 2 different patterns under control of slider switch
-
-
-
-Note: 
-More files than needed in /src (e.g. usb_xx) and /inc 
-but kept to have same structure and contents of all "BringUp" directories
--- only main() is different and calls what needs to be

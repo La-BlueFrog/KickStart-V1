@@ -1,16 +1,16 @@
-USB-oriented (mass storage) :
-============================
+BASIC UART OVER EXTERNAL CONNECTOR TEST
+=======================================
 
-Board Initialization;
+THIS TEST IS INTENDED TO BE RUN WITH AN EXTERNAL LOOPBACK CONNECTION
+BETWEEN UART_TX AND UART_RX PROVIDED ON THE 2 USER-CONFIGURABLE 
+CONNECTOR PINS
 
-Basic sanity check of DataFlash (read ID) 
-and allow user to launch bulk (ie. full chip) erase of data Flash if activating slider switch within 2sec of power on.
+Initialize Board
 
-Activate USB: 
-then connecting to module to USB Host (PC) should allow to store/retrive files to/from disk.
-If not formatted yet, PC Host should (checked on W7) should propose to format drive in FAT(16).
+Set-up external connector to bear UART_TX and UART_RX
+(through file User_Configuration.c)
 
-USB handled by interrupts; run infinite loop flashing green LED in background.
+Bytes from 0x00 to 0xFF are sent in sequence over UART, 1 byte per second.
 
-
-NOTE: still somewhat unstable - under investigation.
+Green LED will remain ON as soon as ONE transfer occurs correctly.
+Red LED will blink at 1Hz rate if successive transfers happen correctly, else it will stay ON.

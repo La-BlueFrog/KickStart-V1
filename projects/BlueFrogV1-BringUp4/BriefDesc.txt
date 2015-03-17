@@ -1,11 +1,11 @@
-USB-Flash interactions oriented :
-================================
+USB Device Test (Mass Storage)
+=============================
 
-Board Initialization;
+Initialize board
 
-USB Mass Storage Initalization;
+Configure board as Mass Storage Device (8MB)
+USB Device Stack runs on STM32, Physical Storage is on Data Flash
 
-Upon activation of slider switch explore directory /PICTURES on Flash based on FAT16 formatting (very rudimentary for now),
-report number of valid BMP images found by flashing green light as many times.
-
-
+La BLueFrog gets recognized by PC as USB Mass Storage drive.
+Limitation: if Flash is not empty and not FAT formatted, PC OS reports abnormal disk behavior.
+If Flash is erased, then PC proposed to format the drive (FAT16)

@@ -1,75 +1,112 @@
 ################################################################################
 #
-# Makefile pour le module Infra - version 1.2
+# Makefile for La BlueFrog V1
 # 
-# Librairie : stm32l1xx_stperiph_lib_v1.2.0 (22/02/13)
-#
 ################################################################################
 
-# Nom de l'executable
+# Name of executable
 TARGET          = inframod
-
-# Version du module
-#VERSION         = USE_INFRAMODULE_V12
-VERSION         = USE_INFRAMODULE_V15
 
 # debugger
 DEBUGGER        = DEBUG
 
-# Optimisation (0,1,2,s)
+
+# Optimization (0,1,2,s)
 OPT             = s
 
-# Adresse des repertoires
+# Directory paths
 SRC_DIR         = ./src
 INC_DIR         = ./inc
 OBJ_DIR         = ./obj
 BIN_DIR         = ./obj
 RACINE          = ../..
 CMSIS_DIR       = $(RACINE)/libraries/CMSIS
-STDPERIPH_DIR   = $(RACINE)/libraries/STM32L1xx_StdPeriph_Driver
-USBDEVICE_DIR   = $(RACINE)/libraries/STM32_USB-FS-Device_Driver
+HAL_DIR         = $(RACINE)/libraries/STM32L1xx_HAL_Driver
+USB_DIR		= $(RACINE)/libraries/STM32_USB_Device_Library
+FATFS_DIR	= $(RACINE)/libraries/FatFS_Lib
+STEMWIN_DIR	= $(RACINE)/libraries/STemWin_Lib
 INFRAMOD_DIR    = $(RACINE)/libraries/BlueFrogV1-Lib
-## "INFRA Module" is original code name of La BlueFrog
+  # "INFRA Module" is original code name of La BlueFrog
+##MIDDLEWARE_DIR  = $(RACINE)/libraries/MIDDLEWARE-ToImprove
+
 
 # Linker script
-LINKER          = $(SRC_DIR)/startup/stm32_flash.ld
+LINKER          = $(RACINE)/projects/STARTUP/STM32L151XC_FLASH.ld
 
-# Adresses des fichiers sources
-VPATH          := $(SRC_DIR):$(SRC_DIR)/startup
+# Source file paths : Startup
+VPATH          := $(SRC_DIR):$(RACINE)/projects/STARTUP
 
-# Adresses des fichiers sources : CMSIS
-VPATH          := $(VPATH):$(CMSIS_DIR)/Device/ST/STM32L1xx/Source/Templates
-CMSIS_SRC       = $(notdir $(wildcard $(CMSIS_DIR)/Device/ST/STM32L1xx/Source/Templates/*.c))
+# Source file paths : STM32L1xx_HAL_Driver
+VPATH          := $(VPATH):$(HAL_DIR)/src
+HAL_SRC   = $(notdir $(wildcard $(HAL_DIR)/src/*.c))
 
-# Adresses des fichiers sources : STM32L1xx_StdPeriph_Driver
-VPATH          := $(VPATH):$(STDPERIPH_DIR)/src
-STDPERIPH_SRC   = $(notdir $(wildcard $(STDPERIPH_DIR)/src/*.c))
+# Source file paths : STM32_USB_Device_Library /Class/MSC & /Core
+VPATH          := $(VPATH):$(USB_DIR)/Class/MSC/Src
+USB_CLASSMSC_SRC   = $(notdir $(wildcard $(USB_DIR)/Class/MSC/Src/*.c))
+VPATH          := $(VPATH):$(USB_DIR)/Core/Src
+USB_CORE_SRC   = $(notdir $(wildcard $(USB_DIR)/Core/Src/*.c))
 
-# Adresses des fichiers sources : STM32L1xx_USB-FS-Device_Driver
-VPATH          := $(VPATH):$(USBDEVICE_DIR)/src
-USBDEVICE_SRC   = $(notdir $(wildcard $(USBDEVICE_DIR)/src/*.c))
+# Source file paths : FatFS_Lib
+VPATH          := $(VPATH):$(FATFS_DIR)/src
+FATFS_SRC   = $(notdir $(wildcard $(FATFS_DIR)/src/*.c))
 
-# Adresses des fichiers sources : InfraModule_Lib_v0.1
-VPATH          := $(VPATH):$(INFRAMOD_DIR)/src
-INFRAMOD_SRC    = $(notdir $(wildcard $(INFRAMOD_DIR)/src/*.c))
+# Source file paths : BlueFrogV2-Lib
+VPATH          := $(VPATH):$(INFRAMOD_DIR)/src/Debug_Utilities
+DEBUG_SRC    = $(notdir $(wildcard $(INFRAMOD_DIR)/src/Debug_Utilities/*.c))
+VPATH          := $(VPATH):$(INFRAMOD_DIR)/src/LBF_API
+LBF_API_SRC    = $(notdir $(wildcard $(INFRAMOD_DIR)/src/LBF_API/*.c))
+VPATH          := $(VPATH):$(INFRAMOD_DIR)/src/Board_Support
+LBF_BSP_SRC    = $(notdir $(wildcard $(INFRAMOD_DIR)/src/Board_Support/*.c))
+VPATH          := $(VPATH):$(INFRAMOD_DIR)/src/LBF_USB_MassStorage
+LBF_USBMS_SRC    = $(notdir $(wildcard $(INFRAMOD_DIR)/src/LBF_USB_MassStorage/*.c))
+VPATH          := $(VPATH):$(INFRAMOD_DIR)/src/LBF_STemWin
+LBF_STEMWIN_SRC    = $(notdir $(wildcard $(INFRAMOD_DIR)/src/LBF_STemWin/*.c))
+VPATH          := $(VPATH):$(INFRAMOD_DIR)/src/LBF_DataFlash_FatFS
+LBF_FATFS_SRC   = $(notdir $(wildcard $(INFRAMOD_DIR)/src/LBF_DataFlash_FatFS/*.c))
+# Didn't manage to use a wildcard for INFRAMOD_DIR/src/*/*.c   ...
 
-#-------------------------------------------------------------------------------
-# Creation de la liste des fichiers sources
+
+# Source file paths : MIDDLEWARE
+##VPATH          := $(VPATH):$(MIDDLEWARE_DIR)/src
+##MIDDLEWARE_SRC  = $(notdir $(wildcard $(MIDDLEWARE_DIR)/src/*.c))
+
+
+#----------------------------------------------------------------------------
+# Creation of list of source files
 SOURCES = \
-	$(notdir $(wildcard $(SRC_DIR)/startup/*.s)) \
+	$(notdir $(wildcard $(RACINE)/projects/STARTUP/*.s)) \
 	$(notdir $(wildcard $(SRC_DIR)/*.c)) \
 	$(CMSIS_SRC) \
-	$(STDPERIPH_SRC) \
-	$(USBDEVICE_SRC) \
-	$(INFRAMOD_SRC)
+	$(HAL_SRC) \
+	$(USB_CLASSMSC_SRC) \
+	$(USB_CORE_SRC) \
+	$(FATFS_SRC) \
+	$(DEBUG_SRC) \
+	$(LBF_API_SRC) \
+	$(LBF_BSP_SRC) \
+	$(LBF_USBMS_SRC) \
+	$(LBF_STEMWIN_SRC) \
+	$(LBF_FATFS_SRC) 
+##	$(MIDDLEWARE_SRC)
+# should define a single $(INFRAMOD_SRC) for all these paths
 
 INCLUDES = \
 	$(INC_DIR) \
 	$(CMSIS_DIR)/Device/ST/STM32L1xx/Include \
 	$(CMSIS_DIR)/Include \
-	$(STDPERIPH_DIR)/inc \
-	$(USBDEVICE_DIR)/inc \
-	$(INFRAMOD_DIR)/inc
+	$(HAL_DIR)/inc \
+	$(USB_DIR)/Class/MSC/Inc \
+	$(USB_DIR)/Core/Inc \
+	$(FATFS_DIR)/inc \
+	$(STEMWIN_DIR)/inc \
+	$(INFRAMOD_DIR)/inc \
+	$(INFRAMOD_DIR)/inc/Debug_Utilities \
+	$(INFRAMOD_DIR)/inc/LBF_API \
+	$(INFRAMOD_DIR)/inc/Board_Support \
+	$(INFRAMOD_DIR)/inc/LBF_USB_MassStorage \
+	$(INFRAMOD_DIR)/inc/LBF_STemWin \
+	$(INFRAMOD_DIR)/inc/LBF_DataFlash_FatFS
+# Didn't manage to use a wildcard for INFRAMOD_DIR/inc/* ...
 
 ARCH_FLAGS = -mthumb -mcpu=cortex-m3
 
@@ -80,12 +117,12 @@ CFLAGS = \
 	-Wall \
 	-ffunction-sections \
 	-fdata-sections \
-	-DSTM32L1XX_MD \
-	-DUSE_STDPERIPH_DRIVER \
-	-D$(VERSION) \
+	-DSTM32L151xC \
+	-DUSE_HAL_DRIVER \
 	-D$(DEBUGGER) \
 	-fno-exceptions \
 	-Wno-write-strings
+#	-D$(VERSION) \
 
 LDFLAGS = \
 	$(ARCH_FLAGS) \
@@ -99,7 +136,9 @@ ASFLAGS = \
 	-x assembler-with-cpp \
 	$(addprefix -I,$(INCLUDES))
 
-# Outils de compilation
+LIBS = -L$(STEMWIN_DIR)/Lib -lSTemWin524b_CM3_GCC
+
+# Compilation Tools
 CC      = arm-none-eabi-gcc
 LD      = arm-none-eabi-ld
 CP      = arm-none-eabi-objcopy
@@ -114,7 +153,8 @@ TARGET_ELF = $(OBJ_DIR)/$(TARGET).elf
 TARGET_OBJ = $(addsuffix .o,$(addprefix $(OBJ_DIR)/,$(basename $(SOURCES))))
 
 #-------------------------------------------------------------------------------
-all: version build run size
+#all: version build run size
+all:  build run size
 
 build: $(TARGET_BIN) $(TARGET_HEX) $(TARGET_LST)
 
@@ -133,12 +173,14 @@ $(TARGET_LST): $(TARGET_ELF)
 $(TARGET_ELF): $(TARGET_OBJ)
 	@echo -e "\033[01;33m==========  GENERATION  ====================================\033[m"
 	@echo "-> "$(notdir $@)""
-	@$(CC) $(LDFLAGS) -o $@ $^
+	@$(CC)  $(LDFLAGS) -o  $@  $^ $(LIBS)
+#	@$(CC) $(LDFLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	@echo -e "\033[01;42m-> COMPILE:\033[m "$(notdir $<)
-	@$(CC) $(CFLAGS) -c -o $@ $<
+	@$(CC) $(CFLAGS) -c -o $@ $< 
+
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
@@ -148,7 +190,7 @@ $(OBJ_DIR)/%.o: %.cpp
 $(OBJ_DIR)/%.o: %.s
 	@mkdir -p $(dir $@)
 	@echo -e "\033[01;42m-> COMPILE:\033[m "$(notdir $<)
-	@$(CC) $(ASFLAGS) -c -o $@ $<
+	@$(CC) $(ASFLAGS) -c -o $@ $< 
 
 run: $(TARGET_BIN)
 	@echo -e "\033[01;33m==========  PROGRAMMATION  =================================\033[m"
@@ -170,28 +212,23 @@ purge:
 	@echo -e "\033[01;41m-> SUPRESSION !!\033[m"
 	@rm -vRf $(OBJ_DIR)
 
-version:
-ifeq ($(VERSION),USE_INFRAMODULE_V12)
-	@echo -e "\033[01;41m /!\ ATTENTION : Compilation pour le module Infra version 1.2 /!\ \033[0m"
-else ifeq ($(VERSION),USE_INFRAMODULE_V15)
-	@echo -e "\033[01;41m /!\ ATTENTION : Compilation pour le module Infra version 1.5 /!\ \033[0m"
-endif
+
 
 help:
 	@echo ""
 	@echo "#==============================================================#"
-	@echo "# Makefile pour STM32L-Discovery                               #"
+	@echo "# Makefile for La BlueFrog V2                                  #"
 	@echo "#                                                              #"
 	@echo "# Usage: make [options]                                        #"
 	@echo "#                                                              #"
 	@echo "#  options:                                                    #"
-	@echo "#   build     compiler le projet complet (avec *.o)            #"
-	@echo "#   run       programmer le microcontroleur sur kit            #"
-	@echo "#   size      afficher la taille du binaire                    #"
-	@echo "#   clean     effacer les fichiers *.bin *.hex *.lst *.elf *~  #"
-	@echo "#   purge     effacer le dossier obj/                          #"
-	@echo "#   help      afficher l'aide memoire                          #"
+	@echo "#   build     compile complete project (with *.o)              #"
+	@echo "#   run       program STM32 on the board                       #"
+	@echo "#   size      show size of binary                              #"
+	@echo "#   clean     erase files *.bin *.hex *.lst *.elf *~           #"
+	@echo "#   purge     erase directory:   obj/                          #"
+	@echo "#   help      show this help                                   #"
 	@echo "#==============================================================#"
 	@echo ""
 
-#-------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------

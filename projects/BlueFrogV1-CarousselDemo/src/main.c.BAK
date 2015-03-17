@@ -1,0 +1,307 @@
+/*******************************************************************************
+ * main.c
+ * 
+ * Author: La BlueFrog, 2015
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * 
+ *************************************************************************/
+
+#include "stm32l1xx.h"
+#include "LBF_Board_Init.h"
+#include "LBF_lowlev_API.h"
+
+#include "LBF_OLED_Init.h"
+
+#include "LBF_LaunchUSB_MassStorage.h"
+
+#include "ff_gen_drv.h" // includes ff.h and diskio.h
+#include "DataFlash_diskio.h"
+
+
+/* Private variables ------------------------------------------------------*/
+FATFS DataFlash_DISK_FatFs; /* File system object for User logical drive */
+FIL MyFile;
+
+
+/* File object */
+char DataFlash_DISK_Path[4]; /* User logical drive path */
+
+
+
+/*******************************************************************************
+* Function Name  : main.
+* Description    : Main routine.
+* Input          : None.
+* Output         : None.
+* Return         : None.
+*******************************************************************************/
+int main(void)
+{
+
+
+
+/* ===================================================== */
+/* Board Initializations and Configurations except OLED  */
+/* (clocks, I/Os, on-chip peripherals, on-board ICs)     */
+/* ===================================================== */
+
+    LBF_Board_Init();
+
+
+
+/* ===================================================== */
+/* Application Code Below */
+/* ===================================================== */
+
+/* ==  User Declarations =============================== */
+
+uint16_t fconfig[11];  // configuration file to control some OLED parameters
+
+void   QuickGreenBlink_On_Fail(boolean_t OkStatus);
+void   QuickRedBlink_On_Fail(boolean_t OkStatus);
+
+//uint32_t wbytes_count; /* File write counts */
+UINT rbytes_count; /* File read counts */
+
+boolean_t  FatFS_Ok = FALSE;
+boolean_t  ValidBMP = TRUE;
+
+BYTE BMPFileHeader[14];
+BYTE BMPImageHeader[40];
+BYTE BMPLineBuffer[3*160];
+
+uint32_t  OffsetHead;
+uint32_t  ImgWidth, ImgHeight;
+
+uint8_t   R, G, B;
+uint16_t  PixelLine565[160];
+
+uint32_t  little_endian_32b (uint8_t data1, uint8_t data2, uint8_t data3, uint8_t data4);
+uint16_t  little_endian_16b (uint8_t data1, uint8_t data2);
+
+uint16_t  i,j;
+
+/* ==  Body              =============================== */
+
+/* --  Start USB  -------------------------------- */
+
+
+  LBF_LaunchUSB_MassStorage();
+  Red_Led_ON();
+  Delay_ms(3000);
+
+
+/* --  Enable OLED  -------------------------------- */
+
+    /*---- Initialize and Enable OLED:    -------------------*/
+    fconfig[0]=0xFFFF;     
+        //so OLED_Config() will use default init value
+    LBF_OLED_Init(fconfig);  
+        //sets up OLED register and powers on OLED VDDH(13V) 
+
+
+
+/* --  Decode PIC1.BMP   -------------------------------- */
+ 
+    if(FATFS_LinkDriver(&DataFlash_DISK_Driver, DataFlash_DISK_Path) == 0)
+    { 
+        if(f_mount(&DataFlash_DISK_FatFs, (TCHAR const*)DataFlash_DISK_Path, 0) == FR_OK)
+        {
+            if(f_open(&MyFile, "PIC1.BMP", FA_OPEN_EXISTING|FA_READ) == FR_OK)
+            {
+
+		// Read File Header (14 bytes)
+                if (f_read( &MyFile, 
+			   BMPFileHeader, sizeof(BMPFileHeader),
+			   &rbytes_count ) == FR_OK)
+		{
+
+		    // Read Image Header (40 bytes)
+                    if (f_read( &MyFile, 
+			       BMPImageHeader, sizeof(BMPImageHeader),
+			       &rbytes_count) == FR_OK)
+		    {
+                         FatFS_Ok = TRUE;
+		    }
+
+                }
+
+		// Stop here and blink fast green LED if failure
+  		QuickGreenBlink_On_Fail(FatFS_Ok);
+
+		// Check first 2 bytes are B,M - Bytes 0,1 in File Header
+		if ( (BMPFileHeader[0] != 0x42) || (BMPFileHeader[1] != 0x4D) )
+		{
+		    ValidBMP = FALSE;
+		}
+
+		// Get Offset to Start of Pixel Data - Bytes 10-13 of File Header
+		OffsetHead = little_endian_32b( BMPFileHeader[10], 
+						BMPFileHeader[11],
+						BMPFileHeader[12],
+						BMPFileHeader[13] );
+
+		// Check picture is 24bpp - Bytes 14-15 of Image Header
+		if ( little_endian_16b( BMPImageHeader[14], BMPImageHeader[15]) != 24 )
+		{
+		    ValidBMP = FALSE;
+		}
+
+		// Get picture width in pix - Bytes 4-7 of Image Header
+		ImgWidth = little_endian_32b(   BMPImageHeader[4], 
+						BMPImageHeader[5],
+						BMPImageHeader[6],
+						BMPImageHeader[7] );
+
+		// Get picture height in pix - Bytes 8-11 of Image Header
+		ImgHeight = little_endian_32b(  BMPImageHeader[8], 
+						BMPImageHeader[9],
+						BMPImageHeader[10],
+						BMPImageHeader[11] );
+
+		// Check picture not greater than 160x128
+		if ( (ImgWidth > 160) || (ImgHeight > 128) )
+		    // POTENTIAL ISSUE: sometimes false despite 160x128 picture
+		    // maybe due to possibility that ImgHeight is negative to indicate top to bottom coding
+		{
+		    ValidBMP = FALSE;
+		}
+
+  		QuickRedBlink_On_Fail(ValidBMP);
+
+
+
+/* --- Now Read and Display Picture line by line  ------------------------ */
+
+		// Move Read Pointer to start of pixel data 
+		if ( f_lseek( &MyFile, (DWORD)(OffsetHead)) != FR_OK )
+		{ 
+		    QuickGreenBlink_On_Fail(FALSE);
+		}
+
+    		for(i=0; i<ImgHeight; i++)
+  		{
+                    if (f_read( &MyFile, BMPLineBuffer, 3*ImgWidth,
+			        &rbytes_count) == FR_OK)
+		    {
+			// Create RGB565 buffer for OLED
+			for (j=0; j<ImgWidth;j++)
+			{
+			    B = BMPLineBuffer[j*3] >> 3;      // truncate 3 LSBs
+			    G = BMPLineBuffer[j*3 + 1] >> 2;  // truncate 2 LSBs
+			    R = BMPLineBuffer[j*3 + 2] >> 3;  // truncate 3 LSBs
+			    PixelLine565[j] =  (uint16_t)((R << 11) | (G << 5) | B);
+			}
+			OLED_DisplayBuffer( 0, (uint8_t)(ImgHeight-1-i), 
+				 	    (uint8_t)(ImgWidth), 1, PixelLine565 );
+		    }
+		    else
+		    {
+		        QuickGreenBlink_On_Fail(FALSE);
+		    }
+		}
+
+	    f_close(&MyFile);
+            }
+        }
+
+        FATFS_UnLinkDriver(DataFlash_DISK_Path);
+
+    }
+
+
+
+
+  while(1);
+    
+}
+
+
+
+/**************************************************************************/
+/**  Private functions  **/
+/**************************************************************************/
+
+void DecodeBMP ( )
+{
+
+
+
+
+
+
+
+}
+
+/* ===================================================================== */
+
+void   QuickGreenBlink_On_Fail(boolean_t OkStatus)
+{
+    if (OkStatus==FALSE)   
+    {
+        while(1)
+        {
+            Green_Led_ON();
+            Delay_ms(100);
+            Green_Led_OFF();
+            Delay_ms(250);
+        }
+    }
+}
+
+void   QuickRedBlink_On_Fail(boolean_t OkStatus)
+{
+    if (OkStatus==FALSE)   
+    {
+        while(1)
+        {
+            Red_Led_ON();
+            Delay_ms(100);
+            Red_Led_OFF();
+            Delay_ms(250);
+        }
+    }
+}
+
+/* ===================================================================== */
+
+/* ---------------------------------------------------------------
+ * @brief  : 32-bit little-endian to big-endian conversion
+ * @param  : little endian data
+ * @return : Permuted data on 4 bytes
+   --------------------------------------------------------------- */
+uint32_t little_endian_32b (uint8_t data1, uint8_t data2, uint8_t data3, uint8_t data4)
+{
+    return (uint32_t)(data1 | (data2 << 8) | (data3 << 16) | (data4 << 24));
+}
+
+
+/* ===================================================================== */
+
+/* ---------------------------------------------------------------
+ * @brief  : 16-bit little-endian to big-endian conversion
+ * @param  : little endian data
+ * @return : Permuted data on 2 bytes
+   --------------------------------------------------------------- */
+uint16_t little_endian_16b (uint8_t data1, uint8_t data2)
+{
+    return (uint16_t)(data1 | (data2 << 8));
+}
+
+
+
+/***************************************************************END OF FILE****/
